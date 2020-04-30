@@ -1,74 +1,213 @@
 #include "circle_buffer.h"
 
-int main()
+Circle_Buffer::Circle_Buffer(int N)
 {
-    string command;
-    Circle_Buffer<5> buffer;
+    this->capacity = N;
+    this->array = new int[capacity];
 
-    while (command != "stop")
+    for (int i = 0; i < N; i++)
     {
-        cout << endl << "Enter the command:" << endl;
-        cin >> command;
+        int value;
 
-        if (command == "insert")
-        {
-            int index;
+        cout << "enter the value :" << endl;
+        cin >> value;
 
-            cout << "Enter the index:" << endl;
-            cin >> index;
+        *(this->array + i) = value;
+    }
+}
 
-            buffer.insert_n(index);
-            buffer.print();
-        }
-        else if (command == "insert_s")
-        {
-            buffer.insert_start();
-            buffer.print();
-        }
-        else if (command == "insert_e")
-        {
-            buffer.insert_end();
-            buffer.print();
-        }
-        else if (command == "print")
-        {
-            buffer.print();
-        }
-        else if (command == "resize")
-        {
-            int size;
+Circle_Buffer::~Circle_Buffer()
+{
+    delete[](this->array);
 
-            cout << "Enter new size:" << endl;
-            cin >> size;
+    cout << "You memory is free";
+}
 
-            buffer.resize(size);
-            buffer.print();
-        }
-        else if (command == "delete")
-        {
-            int index;
+int *Circle_Buffer::start()
+{
+    return array;
+}
 
-            cout << "Enter the index:" << endl;
-            cin >> index;
+int *Circle_Buffer::end()
+{
+    return start() + (capacity - 1);
+}
 
-            buffer.delete_n(index);
-            buffer.print();
-        }
-        else if (command == "delete_s")
+int Circle_Buffer::operator[](int n)
+{
+    return *(start() + (n % capacity));
+}
+
+void Circle_Buffer::insert_start()
+{
+    int value;
+    int count = 1;
+
+    cout << "enter the value :" << endl;
+    cin >> value;
+
+    int *help_array = new int[capacity++];
+
+    for (auto i = start(); i < end(); i++)
+    {
+        *(help_array + count) = *i;
+        count++;
+    }
+
+    free(array);
+    this->array = help_array;
+    *start() = value;
+}
+
+void Circle_Buffer::delete_start()
+{
+    int *help_array = new int[this->capacity - 1];
+    int count = 0;
+    int i = 0;
+
+    while (count < this->capacity)
+    {
+        if (i != 0)
         {
-               buffer.delete_start();
-               buffer.print();
-        }
-        else if (command == "delete_e")
-        {
-            buffer.delete_end();
-            buffer.print();
+            *(help_array + count) = *(start() + i);
+            count++;
+            i++;
         }
         else
         {
-            cout << "Commands: " << endl;
-            cout << "1) stop" << endl << "2) insert" << endl << "3) insert_s" << endl << "4) insert_e" << endl;
-            cout << "5) resize" << endl << "6) delete" << endl << "7) delete_s" << endl << "8) delete_e" << endl << "8) print" << endl;
+            i++;
+            continue;
         }
+    }
+
+    free(array);
+    this->capacity--;
+    this->array = help_array;
+}
+
+void Circle_Buffer::insert_end()
+{
+    int value;
+    int count = 0;
+
+    cout << "enter the value :" << endl;
+    cin >> value;
+
+    int *help_array = new int[capacity++];
+
+    for (auto i = start(); i < end(); i++)
+    {
+        *(help_array + count) = *i;
+        count++;
+    }
+
+    free(array);
+    this->array = help_array;
+    *end() = value;
+}
+
+void Circle_Buffer::delete_end()
+{
+    int *help_array = new int[this->capacity - 1];
+    int count = 0;
+    int i = 0;
+
+    while (count < this->capacity)
+    {
+        if (i != this->capacity - 1)
+        {
+            *(help_array + count) = *(start() + i);
+            count++;
+            i++;
+        }
+        else if (i == this->capacity - 1)
+        {
+            i++;
+            continue;
+        }
+    }
+
+    free(array);
+    this->capacity--;
+    this->array = help_array;
+}
+
+void Circle_Buffer::insert_n(const int *index, int value)
+{
+    int poss = index - start();
+    int *help_array = new int[this->capacity + 1];
+    int count = 0;
+    int i = 0;
+
+    while (count <= this->capacity)
+    {
+        if (count != poss)
+        {
+            *(help_array + count) = *(array + i);
+            count++;
+            i++;
+        }
+        else if (count == poss)
+        {
+            *(help_array + count) = value;
+            count++;
+            continue;
+        }
+    }
+
+    free(array);
+    this->capacity++;
+    this->array = help_array;
+}
+
+void Circle_Buffer::delete_n(int index)
+{
+    int *help_array = new int[this->capacity - 1];
+    int count = 0;
+    int i = 0;
+
+    while (count < this->capacity)
+    {
+        if (i != index)
+        {
+            *(help_array + count) = *(array + i);
+            count++;
+            i++;
+        }
+        else if (i == index)
+        {
+            i++;
+            continue;
+        }
+    }
+
+    free(array);
+    this->capacity--;
+    this->array = help_array;
+}
+
+void Circle_Buffer::resize(int n)
+{
+    int *help_array = new int[n];
+    int count = 0;
+
+    while (count < n)
+    {
+        *(help_array + count) = *(start() + (count % capacity));
+        count++;
+    }
+
+    free(array);
+    this->capacity = n;
+    this->array = help_array;
+}
+
+void Circle_Buffer::print()
+{
+    int count = 0;
+    while (count < this->capacity)
+    {
+        cout << *(start() + count) << " ";
+        count++;
     }
 }
