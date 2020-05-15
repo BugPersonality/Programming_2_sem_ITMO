@@ -4,12 +4,21 @@
 int main()
 {
     string command;
-    int size;
+    unsigned int size;
 
     cout << "Enter size:" << endl;
     cin >> size;
 
-    Circle_Buffer buffer(size);
+    Circle_Buffer<int> buffer(size);
+
+    for (auto i = buffer.start(); i != buffer.end() ; i++)
+    {
+        int value;
+        cout << "enter the value :" << endl;
+        cin >> value;
+        *i = value;
+    }
+    buffer.insert_end(25);
 
     while (command != "stop")
     {
@@ -18,23 +27,31 @@ int main()
 
         if (command == "insert")
         {
-            int index;
-            int value;
+            //int index;
+            //int value;
 
-            cout << "Enter the index and value:" << endl;
-            cin >> index >> value;
+            //cout << "Enter the index and value:" << endl;
+            //cin >> index >> value;
 
-            buffer.insert_n(buffer.start() + index, value);
-            buffer.print();
+            //buffer.insert_n(buffer.start() + index, value);
+            //buffer.print();
+            continue;
         }
         else if (command == "insert_s")
         {
-            buffer.insert_start();
+            int value;
+            cout << "enter the value :" << endl;
+            cin >> value;
+
+            buffer.insert_start(value);
             buffer.print();
         }
         else if (command == "insert_e")
         {
-            buffer.insert_end();
+            int value;
+            cout << "enter the value :" << endl;
+            cin >> value;
+            buffer.insert_end(value);
             buffer.print();
         }
         else if (command == "print")
@@ -59,7 +76,8 @@ int main()
             cout << "Enter the index:" << endl;
             cin >> index;
 
-            buffer.delete_n(index);
+            auto j = buffer.start() + --index;
+            buffer.delete_n(j);
             buffer.print();
         }
         else if (command == "delete_s")
