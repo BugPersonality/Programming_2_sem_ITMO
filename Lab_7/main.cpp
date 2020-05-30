@@ -1,5 +1,7 @@
 #include <iostream>
-#include "circle_buffer.h"
+#include "CircleBuffer.h"
+#include "CircleBuffer.cpp"
+#include <algorithm>
 
 int main()
 {
@@ -11,7 +13,7 @@ int main()
 
     Circle_Buffer<int> buffer(size);
 
-    for (auto i = buffer.start(); i != buffer.end() ; i++)
+    for (auto i = buffer.begin(); i != buffer.end() ; i++)
     {
         int value;
         cout << "enter the value :" << endl;
@@ -33,9 +35,9 @@ int main()
             //cout << "Enter the index and value:" << endl;
             //cin >> index >> value;
 
-            //buffer.insert_n(buffer.start() + index, value);
+            //buffer.insert_n(buffer.begin() + index, value);
             //buffer.print();
-            continue;
+            //continue;
         }
         else if (command == "insert_s")
         {
@@ -76,7 +78,7 @@ int main()
             cout << "Enter the index:" << endl;
             cin >> index;
 
-            auto j = buffer.start() + --index;
+            auto j = buffer.begin() + --index;
             buffer.delete_n(j);
             buffer.print();
         }
@@ -92,12 +94,17 @@ int main()
         }
         else if (command == "print_r")
         {
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 cout << buffer[i] << " ";
             }
 
             cout << endl;
+        }
+        else if (command == "sort")
+        {
+            sort(buffer.begin(), buffer.end());
+
+            cout << "successfully sorted" << endl;
         }
         else
         {
